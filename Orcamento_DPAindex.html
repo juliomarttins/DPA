@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="pt-PT">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Sistema de Orçamento - DPA</title>
+    <style>
+        /* Reset e Base */
+        * { box-sizing: border-box; font-family: Arial, Helvetica, sans-serif; }
+        body { background-color: #555; margin: 0; padding: 20px; display: flex; flex-direction: column; align-items: center; }
+        
+        /* Controles (Não saem na impressão) */
+        .controls-top { background: #333; padding: 15px; border-radius: 8px; margin-bottom: 20px; color: white; display: flex; gap: 10px; width: 100%; max-width: 210mm; justify-content: flex-end; }
+        .btn-print { background: #000; color: #ffcc00; border: 1px solid #ffcc00; padding: 10px 20px; font-weight: bold; cursor: pointer; border-radius: 4px; text-transform: uppercase; }
+        .btn-print:hover { background: #ffcc00; color: #000; }
+        .btn-add-row { width: 100%; background: #fff; border: 1px dashed #aaa; padding: 8px; text-align: center; cursor: pointer; font-weight: bold; color: #888; margin-top: 5px; font-size: 12px; text-transform: uppercase; }
+        .btn-add-row:hover { background: #f4f4f4; border-color: #000; color: #000; }
+        .btn-remove { background: none; border: none; color: #ccc; font-size: 16px; cursor: pointer; padding: 0; font-weight: bold; }
+        .btn-remove:hover { color: #d00; }
+
+        /* A Página A4 (Padrão PC) */
+        .page { background: white; width: 210mm; min-height: 297mm; padding: 10mm; box-shadow: 0 0 15px rgba(0,0,0,0.5); position: relative; display: flex; flex-direction: column; }
+        
+        /* REGRA 1: CAIXA ALTA PARA TODOS OS INPUTS */
+        input { text-transform: uppercase; font-family: inherit; }
+
+        /* Cabeçalho Duplo */
+        .header-boxes { display: flex; justify-content: space-between; gap: 10px; margin-bottom: 5px; }
+        .box-left { border: 1px solid #000; border-radius: 12px; width: 63%; padding: 10px; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; }
+        .logo-dpa { max-width: 250px; margin-bottom: 5px; }
+        .cel-text { font-size: 18px; font-weight: 900; margin: 5px 0; }
+        .address-text { font-size: 10px; font-weight: bold; text-transform: uppercase; line-height: 1.2; }
+        .box-right { border: 1px solid #000; border-radius: 12px; width: 36%; padding: 10px; display: grid; grid-template-columns: 1fr 1fr; align-items: center; justify-items: center; gap: 15px; }
+        .box-right img { max-width: 100px; max-height: 40px; object-fit: contain; }
+
+        /* Bloco do Cliente */
+        .client-box { border: 1px solid #000; border-radius: 5px; margin-bottom: 5px; display: flex; flex-direction: column; overflow: hidden; }
+        .client-row { display: flex; border-bottom: 1px solid #000; align-items: stretch; }
+        .client-row:last-child { border-bottom: none; }
+        .client-field { display: flex; padding: 4px 6px; font-weight: bold; font-size: 12px; align-items: center; }
+        .client-field.border-right { border-right: 1px solid #000; }
+        .client-field input { flex-grow: 1; border: none; background: #f9f9f9; outline: none; font-size: 12px; margin-left: 5px; padding: 2px 4px; }
+        .client-field input:focus { background: #e8f0fe; }
+
+        /* Tabela */
+        .table-wrapper { width: 100%; overflow-x: auto; }
+        .table-header-black { background: #000; color: #fff; text-align: center; font-weight: bold; font-size: 14px; padding: 3px; border: 1px solid #000; border-bottom: none; border-radius: 5px 5px 0 0; }
+        table { width: 100%; border-collapse: collapse; border: 1px solid #000; font-size: 12px; }
+        th, td { border: 1px solid #000; padding: 4px; text-align: center; }
+        th { font-weight: bold; text-transform: uppercase; }
+        
+        td input { width: 100%; border: none; background: #f9f9f9; text-align: center; font-size: 12px; padding: 4px; outline: none; }
+        td input:focus { background: #e8f0fe; }
+        .input-money { text-align: right !important; font-weight: bold; }
+        .input-qtd { width: 40px !important; }
+
+        /* Rodapé de Totais na Tabela */
+        .tfoot-obs { text-align: left; padding: 5px !important; font-size: 11px; font-weight: normal; line-height: 1.4; }
+        .tfoot-label { text-align: right; font-weight: bold; font-size: 16px; vertical-align: middle; }
+        .tfoot-value { background: #ffcc00; padding: 0 !important; }
+        .tfoot-value input { background: transparent !important; border: none; text-align: center; font-weight: bold; font-size: 16px; width: 100%; outline: none; color: #000; padding: 8px 0; }
+
+        /* ADAPTAÇÃO PARA CELULAR (Ecrãs até 768px) */
+        @media screen and (max-width: 768px) {
+            body { padding: 10px; }
+            .controls-top { justify-content: center; }
+            .page { width: 100%; min-height: auto; padding: 5mm; }
+            
+            /* Empilha os cabeçalhos */
+            .header-boxes { flex-direction: column; }
+            .box-left, .box-right { width: 100%; }
+            
+            /* Empilha os campos do cliente */
+            .client-row { flex-direction: column; border-bottom: none; }
+            .client-field { border-right: none !important; border-bottom: 1px solid #000; padding: 8px 6px; }
+            .client-row:last-child .client-field:last-child { border-bottom: none; }
+            .client-field input { font-size: 14px; padding: 6px; }
+            
+            /* Tabela com scroll horizontal */
+            table { min-width: 700px; /* Impede a tabela de amassar no telemóvel */ }
+            td input { font-size: 14px; padding: 8px; }
+            .btn-add-row { padding: 12px; font-size: 14px; }
+        }
+
+        /* Impressão (Geração do PDF - Mantém formato A4 do PC) */
+        @media print {
+            body { background: none; padding: 0; }
+            .controls-top, .btn-remove, .btn-add-row, .col-remove { display: none !important; }
+            .page { box-shadow: none; margin: 0; padding: 5mm; width: 210mm; }
+            input { background: transparent !important; }
+            input::placeholder { color: transparent; }
+            .table-wrapper { overflow: visible; }
+            * { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="controls-top">
+        <button class="btn-print" onclick="window.print()">🖨️ GERAR PDF</button>
+    </div>
+
+    <div class="page">
+        
+        <!-- CABEÇALHO DIVIDIDO -->
+        <div class="header-boxes">
+            <div class="box-left">
+                <img src="DPA.png" alt="DPA" class="logo-dpa">
+                <div class="cel-text">CEL.: (62) 9.8261-6725</div>
+                <div class="address-text">
+                    DPA PRESTADORA DE SERVIÇOS ELÉTRICOS - CNPJ: 27.823.188/0001-24<br>
+                    RUA DOM PEDRO I, QD. 04, LT. 07 - SETOR SÃO PAULO - NERÓPOLIS - GOIÁS
+                </div>
+            </div>
+            
+            <div class="box-right">
+                <img src="ATLAS.png" alt="Atlas">
+                <img src="MURR.png" alt="Murr">
+                <img src="FRD.png" alt="FRD">
+                <img src="EPIROC.png" alt="Epiroc">
+            </div>
+        </div>
+
+        <!-- INFO CLIENTE -->
+        <div class="client-box">
+            <div class="client-row">
+                <div class="client-field border-right" style="flex: 7;">
+                    CLIENTE: <input type="text" placeholder="NOME DO CLIENTE">
+                </div>
+                <div class="client-field" style="flex: 3;">
+                    CNPJ: <input type="text" oninput="mascaraCNPJ(this)" placeholder="00.000.000/0000-00">
+                </div>
+            </div>
+            <div class="client-row">
+                <div class="client-field" style="flex: 1;">
+                    ENDEREÇO: <input type="text" placeholder="ENDEREÇO COMPLETO">
+                </div>
+            </div>
+            <div class="client-row">
+                <div class="client-field border-right" style="flex: 7;">
+                    BAIRRO: <input type="text" placeholder="BAIRRO">
+                </div>
+                <div class="client-field" style="flex: 3;">
+                    CEP: <input type="text" oninput="mascaraCEP(this)" placeholder="00000-000">
+                </div>
+            </div>
+        </div>
+
+        <!-- TABELA COM TOTAL ANEXADO -->
+        <div>
+            <div class="table-header-black">DESCRIÇÃO</div>
+            <div class="table-wrapper">
+                <table>
+                    <thead>
+                        <tr>
+                            <th style="width: 5%;">QTD</th>
+                            <th style="width: 15%;">CÓDIGO</th>
+                            <th style="width: 35%;">MODELO</th>
+                            <th style="width: 15%;">PREÇO UNIT.</th>
+                            <th style="width: 15%;">PREÇO TOTAL</th>
+                            <th style="width: 15%;">DISPONIBILIDADE</th>
+                            <th class="col-remove" style="width: 2%; border: none;"></th>
+                        </tr>
+                    </thead>
+                    <tbody id="tabela-corpo">
+                        <!-- Javascript insere itens aqui -->
+                    </tbody>
+                    <!-- RODAPÉ INTEGRADO À TABELA -->
+                    <tfoot>
+                        <tr>
+                            <td colspan="3" class="tfoot-obs">
+                                *OBS.: 5% de desconto em nota de serviço<br>
+                                *Sem frete
+                            </td>
+                            <td colspan="1" class="tfoot-label">TOTAL:</td>
+                            <td colspan="2" class="tfoot-value">
+                                <input type="text" id="valor-total-geral" value="R$ 0,00" readonly>
+                            </td>
+                            <td class="col-remove" style="border: none;"></td>
+                        </tr>
+                    </tfoot>
+                </table>
+            </div>
+            <div class="btn-add-row" onclick="adicionarLinha()">+ ADICIONAR ITEM</div>
+        </div>
+
+    </div>
+
+    <script>
+        // Formatação Automática (Máscaras)
+        function mascaraCNPJ(input) {
+            let v = input.value.replace(/\D/g, "");
+            if (v.length > 14) v = v.substring(0, 14);
+            v = v.replace(/^(\d{2})(\d)/, "$1.$2");
+            v = v.replace(/^(\d{2})\.(\d{3})(\d)/, "$1.$2.$3");
+            v = v.replace(/\.(\d{3})(\d)/, ".$1/$2");
+            v = v.replace(/(\d{4})(\d)/, "$1-$2");
+            input.value = v;
+        }
+
+        function mascaraCEP(input) {
+            let v = input.value.replace(/\D/g, "");
+            if (v.length > 8) v = v.substring(0, 8);
+            v = v.replace(/^(\d{5})(\d)/, "$1-$2");
+            input.value = v;
+        }
+
+        // Cálculos e Formatação Monetária
+        function formatarMoeda(valor) {
+            return valor.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+        }
+
+        function extrairNumero(str) {
+            if (!str) return 0;
+            let num = str.replace(/[^\d,-]/g, '').replace(',', '.');
+            return parseFloat(num) || 0;
+        }
+
+        function calcularTotais() {
+            let totalGeral = 0;
+            const linhas = document.querySelectorAll('#tabela-corpo tr');
+
+            linhas.forEach(linha => {
+                const inputQtd = linha.querySelector('.qtd');
+                const inputUnit = linha.querySelector('.unitario');
+                const inputTotal = linha.querySelector('.total-linha');
+
+                let qtd = parseFloat(inputQtd.value) || 0;
+                let unitario = extrairNumero(inputUnit.value);
+                let totalLinha = qtd * unitario;
+
+                inputTotal.value = formatarMoeda(totalLinha);
+                totalGeral += totalLinha;
+            });
+
+            document.getElementById('valor-total-geral').value = formatarMoeda(totalGeral);
+        }
+
+        function formatarInputMoeda(event) {
+            let input = event.target;
+            let valor = extrairNumero(input.value);
+            input.value = formatarMoeda(valor);
+            calcularTotais();
+        }
+
+        // Gestão de Linhas
+        function adicionarLinha() {
+            const tbody = document.getElementById('tabela-corpo');
+            const tr = document.createElement('tr');
+            
+            tr.innerHTML = `
+                <td><input type="number" class="qtd input-qtd" value="1" min="1" oninput="calcularTotais()"></td>
+                <td><input type="text"></td>
+                <td><input type="text"></td>
+                <td><input type="text" class="unitario input-money" onblur="formatarInputMoeda(event)"></td>
+                <td><input type="text" class="total-linha input-money" value="R$ 0,00" readonly style="background: transparent;"></td>
+                <td><input type="text"></td>
+                <td class="col-remove" style="border: none; background: transparent;">
+                    <button class="btn-remove" onclick="removerLinha(this)" title="Remover item">×</button>
+                </td>
+            `;
+            tbody.appendChild(tr);
+        }
+
+        function removerLinha(btn) {
+            btn.closest('tr').remove();
+            calcularTotais();
+        }
+
+        window.onload = () => {
+            for(let i=0; i<2; i++) adicionarLinha();
+        };
+    </script>
+</body>
+</html>
