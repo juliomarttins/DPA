@@ -47,8 +47,8 @@
         .logo-dpa { max-width: 250px; margin-bottom: 5px; }
         .cel-text { font-size: 18px; font-weight: 900; margin: 5px 0; }
         .address-text { font-size: 10px; font-weight: bold; text-transform: uppercase; line-height: 1.2; }
-        .box-right { border: 1px solid #000; border-radius: 12px; width: 36%; padding: 10px; display: grid; grid-template-columns: 1fr 1fr; align-items: center; justify-items: center; gap: 15px; }
-        .box-right img { max-width: 100px; max-height: 40px; object-fit: contain; }
+        .box-right { border: 1px solid #000; border-radius: 12px; width: 36%; padding: 8px 10px; display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: 10px 14px; }
+        .box-right img { max-width: 82px; max-height: 32px; object-fit: contain; }
 
         /* Bloco do Cliente */
         .client-box { border: 1px solid #000; border-radius: 5px; margin-bottom: 5px; display: flex; flex-direction: column; overflow: hidden; }
@@ -147,6 +147,7 @@
                     <img src="MURR.png" alt="Murr">
                     <img src="FRD.png" alt="FRD">
                     <img src="EPIROC.png" alt="Epiroc">
+                    <img src="sandivik.png" alt="Sandvik">
                 </div>
             </div>
 
@@ -233,15 +234,13 @@
             const user = document.getElementById('user-input').value.toLowerCase().trim();
             const pass = document.getElementById('pass-input').value.toLowerCase().trim();
             
-            // As credenciais estão ofuscadas em Base64 para não ficarem expostas em texto limpo.
-            // btoa('dpa') = 'ZHBh'
-            // btoa('dpa2026') = 'ZHBhMjAyNg=='
+            // Credenciais ofuscadas em Base64
             if (btoa(user) === 'ZHBh' && btoa(pass) === 'ZHBhMjAyNg==') {
                 sessionStorage.setItem('dpa_auth_token', 'true');
                 liberarAcesso();
             } else {
                 document.getElementById('login-error').style.display = 'block';
-                document.getElementById('pass-input').value = ''; // Limpa a senha
+                document.getElementById('pass-input').value = '';
             }
         }
 
@@ -252,7 +251,7 @@
 
         function sair() {
             sessionStorage.removeItem('dpa_auth_token');
-            location.reload(); // Recarrega a página para travar novamente
+            location.reload();
         }
 
         // ==========================================
