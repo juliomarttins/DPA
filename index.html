@@ -1,110 +1,704 @@
 <!DOCTYPE html>
-<html lang="pt-PT">
+<html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sistema de Orçamento - DPA</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
     <style>
-        /* Reset e Base */
-        * { box-sizing: border-box; font-family: Arial, Helvetica, sans-serif; }
-        body { background-color: #555; margin: 0; padding: 20px; display: flex; flex-direction: column; align-items: center; min-height: 100vh; }
-        
-        /* TELA DE LOGIN */
-        #login-screen { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #222; display: flex; flex-direction: column; align-items: center; justify-content: center; z-index: 9999; }
-        .login-box { background: #fff; padding: 30px; border-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.8); text-align: center; width: 320px; }
-        .login-box img { max-width: 150px; margin-bottom: 15px; }
-        .login-box h2 { margin-top: 0; margin-bottom: 20px; font-size: 18px; color: #333; text-transform: uppercase; }
-        .login-box input { width: 100%; padding: 12px; margin: 8px 0; border: 1px solid #ccc; border-radius: 4px; font-size: 14px; outline: none; }
-        .login-box input:focus { border-color: #000; }
-        .login-box button { background: #ffcc00; color: #000; border: 2px solid #000; padding: 12px; width: 100%; font-weight: bold; cursor: pointer; border-radius: 4px; margin-top: 10px; text-transform: uppercase; font-size: 14px; transition: 0.2s; }
-        .login-box button:hover { background: #000; color: #ffcc00; }
-        .error-msg { color: #d00; font-size: 13px; font-weight: bold; margin-bottom: 10px; display: none; }
+        :root {
+            --brand-yellow: #ffcc00;
+            --brand-yellow-hover: #ffd633;
+            --glass-bg: rgba(255, 255, 255, 0.08);
+            --glass-border: rgba(255, 255, 255, 0.18);
+            --glass-highlight: rgba(255, 255, 255, 0.25);
+            --glass-shadow: 0 20px 50px rgba(0, 0, 0, 0.5), inset 0 1px 1px rgba(255, 255, 255, 0.25);
+        }
 
-        /* Esconder o App inicialmente */
+        /* Reset e Base */
+        * { box-sizing: border-box; font-family: 'Inter', Arial, Helvetica, sans-serif; }
+        
+        body {
+            background-color: #0f1115;
+            background-image: 
+                radial-gradient(circle at 15% 20%, rgba(255, 204, 0, 0.14) 0%, transparent 35%),
+                radial-gradient(circle at 85% 80%, rgba(255, 180, 0, 0.10) 0%, transparent 40%),
+                radial-gradient(circle at 50% 50%, #1a1d24 0%, #0b0c10 100%);
+            background-attachment: fixed;
+            margin: 0;
+            padding: 24px 16px 40px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+            color: #111;
+        }
+
+        /* ==========================================
+           TELA DE LOGIN - LIQUID GLASS
+           ========================================== */
+        #login-screen {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background:
+                radial-gradient(circle at 30% 30%, rgba(255, 204, 0, 0.2), transparent 40%),
+                radial-gradient(circle at 70% 70%, rgba(255, 255, 255, 0.06), transparent 45%),
+                rgba(10, 12, 16, 0.85);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+            padding: 20px;
+        }
+
+        .login-box {
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.12) 0%, rgba(255, 255, 255, 0.04) 100%);
+            backdrop-filter: blur(24px) saturate(180%);
+            -webkit-backdrop-filter: blur(24px) saturate(180%);
+            border: 1px solid var(--glass-border);
+            border-top: 1px solid var(--glass-highlight);
+            box-shadow: var(--glass-shadow);
+            padding: 38px 32px;
+            border-radius: 24px;
+            text-align: center;
+            width: 100%;
+            max-width: 360px;
+            color: #fff;
+        }
+
+        .login-box img {
+            max-width: 170px;
+            margin-bottom: 18px;
+            filter: drop-shadow(0 4px 12px rgba(0, 0, 0, 0.5));
+        }
+
+        .login-box h2 {
+            margin: 0 0 22px 0;
+            font-size: 16px;
+            font-weight: 700;
+            letter-spacing: 1.5px;
+            color: rgba(255, 255, 255, 0.9);
+            text-transform: uppercase;
+        }
+
+        .login-box input {
+            width: 100%;
+            padding: 14px 16px;
+            margin: 8px 0;
+            background: rgba(0, 0, 0, 0.35);
+            border: 1px solid rgba(255, 255, 255, 0.16);
+            border-radius: 12px;
+            font-size: 14px;
+            color: #fff;
+            outline: none;
+            transition: all 0.25s ease;
+        }
+
+        .login-box input::placeholder { color: rgba(255, 255, 255, 0.45); }
+        .login-box input:focus {
+            border-color: var(--brand-yellow);
+            background: rgba(0, 0, 0, 0.55);
+            box-shadow: 0 0 0 3px rgba(255, 204, 0, 0.2);
+        }
+
+        .login-box button {
+            background: linear-gradient(135deg, #ffd633 0%, #e6b800 100%);
+            color: #000;
+            border: none;
+            padding: 14px;
+            width: 100%;
+            font-weight: 800;
+            cursor: pointer;
+            border-radius: 12px;
+            margin-top: 14px;
+            text-transform: uppercase;
+            font-size: 14px;
+            letter-spacing: 0.5px;
+            box-shadow: 0 8px 20px rgba(255, 204, 0, 0.3);
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .login-box button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 24px rgba(255, 204, 0, 0.45);
+        }
+
+        .error-msg {
+            background: rgba(255, 59, 48, 0.18);
+            border: 1px solid rgba(255, 59, 48, 0.4);
+            color: #ff8078;
+            padding: 10px;
+            border-radius: 10px;
+            font-size: 13px;
+            font-weight: 600;
+            margin-bottom: 12px;
+            display: none;
+        }
+
+        /* ==========================================
+           BARRA SUPERIOR - LIQUID GLASS
+           ========================================== */
         #app-content { display: none; width: 100%; flex-direction: column; align-items: center; }
 
-        /* Controles (Não saem na impressão) */
-        .controls-top { background: #333; padding: 15px; border-radius: 8px; margin-bottom: 20px; color: white; display: flex; gap: 10px; width: 100%; max-width: 210mm; justify-content: flex-end; }
-        .btn-print { background: #000; color: #ffcc00; border: 1px solid #ffcc00; padding: 10px 20px; font-weight: bold; cursor: pointer; border-radius: 4px; text-transform: uppercase; }
-        .btn-print:hover { background: #ffcc00; color: #000; }
-        .btn-logout { background: #444; color: #fff; border: 1px solid #777; padding: 10px 20px; font-weight: bold; cursor: pointer; border-radius: 4px; text-transform: uppercase; }
-        .btn-logout:hover { background: #ff4444; color: #fff; border-color: #ff4444; }
+        .controls-top {
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.12) 0%, rgba(255, 255, 255, 0.05) 100%);
+            backdrop-filter: blur(20px) saturate(180%);
+            -webkit-backdrop-filter: blur(20px) saturate(180%);
+            border: 1px solid var(--glass-border);
+            border-top: 1px solid var(--glass-highlight);
+            box-shadow: 0 12px 32px rgba(0, 0, 0, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.2);
+            padding: 12px 18px;
+            border-radius: 18px;
+            margin-bottom: 24px;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            width: 100%;
+            max-width: 210mm;
+            position: sticky;
+            top: 12px;
+            z-index: 100;
+        }
 
-        .btn-add-row { width: 100%; background: #fff; border: 1px dashed #aaa; padding: 8px; text-align: center; cursor: pointer; font-weight: bold; color: #888; margin-top: 5px; font-size: 12px; text-transform: uppercase; }
-        .btn-add-row:hover { background: #f4f4f4; border-color: #000; color: #000; }
-        .btn-remove { background: none; border: none; color: #ccc; font-size: 16px; cursor: pointer; padding: 0; font-weight: bold; }
-        .btn-remove:hover { color: #d00; }
+        .brand-pill {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 13px;
+            font-weight: 600;
+            color: rgba(255, 255, 255, 0.85);
+        }
 
-        /* A Página A4 (Padrão PC) */
-        .page { background: white; width: 210mm; min-height: 297mm; padding: 10mm; box-shadow: 0 0 15px rgba(0,0,0,0.5); position: relative; display: flex; flex-direction: column; }
-        
-        /* REGRA 1: CAIXA ALTA PARA TODOS OS INPUTS NO APP (Ignora o Login) */
+        .status-dot {
+            width: 8px; height: 8px;
+            background: #34c759;
+            border-radius: 50%;
+            box-shadow: 0 0 8px #34c759;
+        }
+
+        .controls-actions { display: flex; gap: 10px; }
+
+        .btn-print {
+            background: linear-gradient(135deg, #ffd633 0%, #f5b800 100%);
+            color: #000;
+            border: none;
+            padding: 10px 20px;
+            font-weight: 800;
+            font-size: 13px;
+            cursor: pointer;
+            border-radius: 12px;
+            text-transform: uppercase;
+            letter-spacing: 0.4px;
+            box-shadow: 0 4px 15px rgba(255, 204, 0, 0.3);
+            transition: all 0.2s ease;
+        }
+
+        .btn-print:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 6px 20px rgba(255, 204, 0, 0.5);
+        }
+
+        .btn-logout {
+            background: rgba(255, 255, 255, 0.08);
+            color: #fff;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            padding: 10px 16px;
+            font-weight: 600;
+            font-size: 13px;
+            cursor: pointer;
+            border-radius: 12px;
+            text-transform: uppercase;
+            transition: all 0.2s ease;
+        }
+
+        .btn-logout:hover {
+            background: rgba(255, 68, 68, 0.25);
+            border-color: rgba(255, 68, 68, 0.6);
+            color: #ff9999;
+        }
+
+        /* ==========================================
+           PÁGINA DO ORÇAMENTO (A4)
+           ========================================== */
+        .page {
+            background: #ffffff;
+            width: 210mm;
+            min-height: 297mm;
+            padding: 12mm;
+            border-radius: 16px;
+            box-shadow: 0 25px 60px rgba(0, 0, 0, 0.6);
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        /* Caixa alta para todos os inputs do orçamento */
         #app-content input { text-transform: uppercase; font-family: inherit; }
 
         /* Cabeçalho Duplo */
-        .header-boxes { display: flex; justify-content: space-between; gap: 10px; margin-bottom: 5px; }
-        .box-left { border: 1px solid #000; border-radius: 12px; width: 63%; padding: 10px; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; }
-        .logo-dpa { max-width: 250px; margin-bottom: 5px; }
-        .cel-text { font-size: 18px; font-weight: 900; margin: 5px 0; }
-        .address-text { font-size: 10px; font-weight: bold; text-transform: uppercase; line-height: 1.2; }
-        .box-right { border: 1px solid #000; border-radius: 12px; width: 36%; padding: 8px 10px; display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: 10px 14px; }
-        .box-right img { max-width: 82px; max-height: 32px; object-fit: contain; }
-
-        /* Bloco do Cliente */
-        .client-box { border: 1px solid #000; border-radius: 5px; margin-bottom: 5px; display: flex; flex-direction: column; overflow: hidden; }
-        .client-row { display: flex; border-bottom: 1px solid #000; align-items: stretch; }
-        .client-row:last-child { border-bottom: none; }
-        .client-field { display: flex; padding: 4px 6px; font-weight: bold; font-size: 12px; align-items: center; }
-        .client-field.border-right { border-right: 1px solid #000; }
-        .client-field input { flex-grow: 1; border: none; background: #f9f9f9; outline: none; font-size: 12px; margin-left: 5px; padding: 2px 4px; }
-        .client-field input:focus { background: #e8f0fe; }
-
-        /* Tabela */
-        .table-wrapper { width: 100%; overflow-x: auto; }
-        .table-header-black { background: #000; color: #fff; text-align: center; font-weight: bold; font-size: 14px; padding: 3px; border: 1px solid #000; border-bottom: none; border-radius: 5px 5px 0 0; }
-        table { width: 100%; border-collapse: collapse; border: 1px solid #000; font-size: 12px; }
-        th, td { border: 1px solid #000; padding: 4px; text-align: center; }
-        th { font-weight: bold; text-transform: uppercase; }
-        
-        td input { width: 100%; border: none; background: #f9f9f9; text-align: center; font-size: 12px; padding: 4px; outline: none; }
-        td input:focus { background: #e8f0fe; }
-        .input-money { text-align: right !important; font-weight: bold; }
-        .input-qtd { width: 40px !important; }
-
-        /* Rodapé de Totais na Tabela */
-        .tfoot-obs { text-align: left; padding: 5px !important; font-size: 11px; font-weight: normal; line-height: 1.4; }
-        .tfoot-label { text-align: right; font-weight: bold; font-size: 16px; vertical-align: middle; }
-        .tfoot-value { background: #ffcc00; padding: 0 !important; }
-        .tfoot-value input { background: transparent !important; border: none; text-align: center; font-weight: bold; font-size: 16px; width: 100%; outline: none; color: #000; padding: 8px 0; }
-
-        /* ADAPTAÇÃO PARA CELULAR */
-        @media screen and (max-width: 768px) {
-            body { padding: 10px; }
-            .controls-top { justify-content: center; }
-            .page { width: 100%; min-height: auto; padding: 5mm; }
-            .header-boxes { flex-direction: column; }
-            .box-left, .box-right { width: 100%; }
-            .client-row { flex-direction: column; border-bottom: none; }
-            .client-field { border-right: none !important; border-bottom: 1px solid #000; padding: 8px 6px; }
-            .client-row:last-child .client-field:last-child { border-bottom: none; }
-            .client-field input { font-size: 14px; padding: 6px; }
-            table { min-width: 700px; }
-            td input { font-size: 14px; padding: 8px; }
-            .btn-add-row { padding: 12px; font-size: 14px; }
+        .header-boxes {
+            display: flex;
+            justify-content: space-between;
+            gap: 12px;
+            align-items: stretch;
         }
 
-        /* Impressão */
-        @media print {
-            body { background: none; padding: 0; }
-            /* Se tentar imprimir na tela de login, esconde tudo */
-            #login-screen { display: none !important; } 
+        .box-left {
+            border: 1.5px solid #000;
+            border-radius: 12px;
+            width: 62%;
+            padding: 14px 12px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+        }
+
+        .logo-dpa { max-width: 230px; max-height: 75px; object-fit: contain; margin-bottom: 6px; }
+        .cel-text { font-size: 18px; font-weight: 900; margin: 4px 0; letter-spacing: 0.3px; }
+        .address-text { font-size: 10px; font-weight: 700; text-transform: uppercase; line-height: 1.35; color: #111; }
+
+        .box-right {
+            border: 1.5px solid #000;
+            border-radius: 12px;
+            width: 38%;
+            padding: 12px;
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            justify-content: center;
+            gap: 12px 16px;
+        }
+
+        .box-right img { max-width: 85px; max-height: 34px; object-fit: contain; }
+
+        /* Bloco do Cliente */
+        .client-box {
+            border: 1.5px solid #000;
+            border-radius: 10px;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            background: #fff;
+        }
+
+        .client-row {
+            display: flex;
+            border-bottom: 1px solid #000;
+            align-items: stretch;
+        }
+
+        .client-row:last-child { border-bottom: none; }
+
+        .client-field {
+            display: flex;
+            padding: 7px 10px;
+            font-weight: 800;
+            font-size: 12px;
+            align-items: center;
+            gap: 6px;
+            position: relative;
+        }
+
+        .client-field label {
+            white-space: nowrap;
+            color: #000;
+        }
+
+        .client-field.border-right { border-right: 1px solid #000; }
+
+        .client-field input {
+            flex-grow: 1;
+            width: 100%;
+            border: 1px solid transparent;
+            background: #f4f6f8;
+            border-radius: 6px;
+            outline: none;
+            font-size: 12px;
+            font-weight: 600;
+            padding: 6px 8px;
+            color: #000;
+            transition: all 0.2s;
+        }
+
+        .client-field input:focus {
+            background: #fffbe6;
+            border-color: #e6b800;
+        }
+
+        .api-status {
+            font-size: 10px;
+            font-weight: 700;
+            padding: 2px 6px;
+            border-radius: 4px;
+            white-space: nowrap;
+            display: none;
+        }
+        .api-status.loading { display: inline-block; background: #fff3cd; color: #856404; }
+        .api-status.ok { display: inline-block; background: #d4edda; color: #155724; }
+        .api-status.erro { display: inline-block; background: #f8d7da; color: #721c24; }
+
+        /* Tabela de Itens */
+        .table-section { display: flex; flex-direction: column; }
+        
+        .table-header-black {
+            background: #000;
+            color: #fff;
+            text-align: center;
+            font-weight: 800;
+            font-size: 13px;
+            letter-spacing: 1px;
+            padding: 6px;
+            border: 1.5px solid #000;
+            border-bottom: none;
+            border-radius: 10px 10px 0 0;
+        }
+
+        .table-wrapper { width: 100%; }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            border: 1.5px solid #000;
+            font-size: 12px;
+        }
+
+        th, td {
+            border: 1px solid #000;
+            padding: 6px;
+            text-align: center;
+            vertical-align: middle;
+        }
+
+        th {
+            background: #f1f3f5;
+            font-weight: 800;
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+            padding: 8px 4px;
+        }
+
+        td input {
+            width: 100%;
+            border: 1px solid transparent;
+            background: #f4f6f8;
+            border-radius: 6px;
+            text-align: center;
+            font-size: 12px;
+            font-weight: 600;
+            padding: 7px 6px;
+            outline: none;
+            transition: all 0.15s;
+        }
+
+        td input:focus {
+            background: #fffbe6;
+            border-color: #e6b800;
+        }
+
+        .input-money { text-align: right !important; font-weight: 700 !important; }
+        .input-qtd { font-weight: 700; }
+
+        /* Botões de Adicionar / Remover Linhas */
+        .btn-add-row {
+            width: 100%;
+            background: #f8f9fa;
+            border: 1.5px dashed #adb5bd;
+            border-radius: 0 0 10px 10px;
+            padding: 11px;
+            text-align: center;
+            cursor: pointer;
+            font-weight: 800;
+            color: #495057;
+            margin-top: 6px;
+            font-size: 12px;
+            text-transform: uppercase;
+            transition: all 0.2s;
+        }
+
+        .btn-add-row:hover {
+            background: #fffbe6;
+            border-color: #000;
+            color: #000;
+        }
+
+        .btn-remove {
+            background: #fee2e2;
+            border: none;
+            color: #dc2626;
+            width: 26px;
+            height: 26px;
+            border-radius: 6px;
+            font-size: 16px;
+            line-height: 1;
+            cursor: pointer;
+            font-weight: bold;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.15s;
+        }
+
+        .btn-remove:hover { background: #dc2626; color: #fff; }
+
+        /* Rodapé de Observações e Total */
+        .tfoot-obs {
+            text-align: left;
+            padding: 8px 10px !important;
+            vertical-align: top;
+        }
+
+        .obs-list {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+
+        .obs-item {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            font-size: 11px;
+            font-weight: 700;
+        }
+
+        .obs-bullet {
+            font-weight: 900;
+            color: #000;
+            user-select: none;
+        }
+
+        .obs-item input {
+            text-align: left !important;
+            padding: 4px 6px !important;
+            font-size: 11px !important;
+            font-weight: 600 !important;
+            background: #f4f6f8;
+            height: auto;
+        }
+
+        .btn-remove-obs {
+            background: transparent;
+            border: none;
+            color: #dc2626;
+            font-size: 15px;
+            font-weight: bold;
+            cursor: pointer;
+            padding: 0 4px;
+            line-height: 1;
+        }
+
+        .btn-add-obs {
+            margin-top: 6px;
+            background: #eef2f6;
+            border: 1px dashed #6c757d;
+            color: #212529;
+            font-size: 10px;
+            font-weight: 800;
+            padding: 5px 10px;
+            border-radius: 6px;
+            cursor: pointer;
+            text-transform: uppercase;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            transition: 0.15s;
+        }
+
+        .btn-add-obs:hover {
+            background: #fffbe6;
+            border-color: #000;
+        }
+
+        .tfoot-label {
+            text-align: right;
+            font-weight: 900;
+            font-size: 15px;
+            padding-right: 10px !important;
+            vertical-align: middle;
+        }
+
+        .tfoot-value {
+            background: var(--brand-yellow);
+            padding: 0 !important;
+            vertical-align: middle;
+        }
+
+        .tfoot-value input {
+            background: transparent !important;
+            border: none;
+            text-align: center;
+            font-weight: 900;
+            font-size: 16px;
+            width: 100%;
+            outline: none;
+            color: #000;
+            padding: 10px 4px;
+        }
+
+        /* ==========================================
+           OTIMIZAÇÃO PARA CELULAR (CARDS INTERATIVOS)
+           ========================================== */
+        @media screen and (max-width: 768px) {
+            body { padding: 12px 8px 30px; }
             
-            .controls-top, .btn-remove, .btn-add-row, .col-remove { display: none !important; }
-            .page { box-shadow: none; margin: 0; padding: 5mm; width: 210mm; }
-            input { background: transparent !important; }
-            input::placeholder { color: transparent; }
-            .table-wrapper { overflow: visible; }
-            * { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
+            .controls-top {
+                flex-direction: column;
+                align-items: stretch;
+                gap: 10px;
+                padding: 12px;
+            }
+            .brand-pill { justify-content: center; }
+            .controls-actions { width: 100%; }
+            .controls-actions button { flex: 1; padding: 12px; }
+
+            .page {
+                width: 100%;
+                min-height: auto;
+                padding: 14px;
+                border-radius: 14px;
+            }
+
+            .header-boxes { flex-direction: column; }
+            .box-left, .box-right { width: 100%; }
+
+            .client-row { flex-direction: column; border-bottom: none; }
+            .client-field {
+                border-right: none !important;
+                border-bottom: 1px solid #000;
+                padding: 10px;
+                flex-wrap: wrap;
+            }
+            .client-row:last-child .client-field:last-child { border-bottom: none; }
+            .client-field input { font-size: 14px; padding: 10px; }
+
+            /* Transforma a tabela em Cards no Celular */
+            table, thead, tbody, tfoot, th, td, tr { display: block; }
+            thead tr { display: none; }
+            table { border: none; }
+
+            #tabela-corpo tr {
+                border: 1.5px solid #000;
+                border-radius: 10px;
+                margin-bottom: 12px;
+                padding: 10px;
+                background: #fff;
+                box-shadow: 0 3px 8px rgba(0,0,0,0.06);
+                position: relative;
+            }
+
+            #tabela-corpo td {
+                border: none;
+                padding: 6px 0;
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                text-align: right;
+                gap: 10px;
+            }
+
+            #tabela-corpo td::before {
+                content: attr(data-label);
+                font-weight: 800;
+                font-size: 11px;
+                color: #333;
+                text-transform: uppercase;
+                text-align: left;
+                min-width: 110px;
+            }
+
+            #tabela-corpo td input {
+                font-size: 14px;
+                padding: 10px;
+                text-align: left;
+            }
+
+            .col-remove {
+                justify-content: flex-end !important;
+                padding-top: 8px !important;
+                border-top: 1px dashed #ddd !important;
+                margin-top: 4px;
+            }
+            .col-remove::before { content: "AÇÃO" !important; }
+            .btn-remove { width: auto; padding: 6px 14px; font-size: 13px; }
+            .btn-remove::after { content: " Remover item"; font-size: 12px; margin-left: 4px; }
+
+            tfoot tr {
+                border: 1.5px solid #000;
+                border-radius: 10px;
+                overflow: hidden;
+                margin-top: 8px;
+            }
+            .tfoot-obs { border: none; border-bottom: 1px solid #000; padding: 12px !important; }
+            .obs-item input { font-size: 13px !important; padding: 8px !important; }
+            .btn-add-obs { padding: 8px 12px; font-size: 11px; width: 100%; justify-content: center; }
+            .tfoot-label { text-align: center; padding: 8px !important; border: none; background: #f1f3f5; }
+            .tfoot-value { border: none; }
+            .tfoot-value input { font-size: 20px; padding: 14px; }
+
+            .btn-add-row { padding: 15px; font-size: 14px; border-radius: 10px; margin-top: 4px; }
+        }
+
+        /* ==========================================
+           MODO DE IMPRESSÃO / PDF (SEMPRE FIEL AO A4)
+           ========================================== */
+        @media print {
+            @page { size: A4 portrait; margin: 6mm; }
+            body { background: none !important; padding: 0 !important; margin: 0 !important; }
+            #login-screen, .controls-top, .btn-remove, .btn-add-row, .col-remove, .btn-add-obs, .btn-remove-obs, .api-status {
+                display: none !important;
+            }
+
+            .page {
+                box-shadow: none !important;
+                margin: 0 !important;
+                padding: 0 !important;
+                width: 100% !important;
+                min-height: auto !important;
+                border-radius: 0 !important;
+                gap: 8px !important;
+            }
+
+            /* Garante que mesmo imprimindo pelo celular saia como tabela A4 */
+            .header-boxes { flex-direction: row !important; }
+            .box-left { width: 62% !important; }
+            .box-right { width: 38% !important; }
+            .client-row { flex-direction: row !important; border-bottom: 1px solid #000 !important; }
+            .client-row:last-child { border-bottom: none !important; }
+            .client-field { border-bottom: none !important; padding: 4px 6px !important; }
+            .client-field.border-right { border-right: 1px solid #000 !important; }
+
+            table { display: table !important; border: 1.5px solid #000 !important; }
+            thead { display: table-header-group !important; }
+            tbody { display: table-row-group !important; }
+            tfoot { display: table-footer-group !important; }
+            tr { display: table-row !important; border: none !important; margin: 0 !important; padding: 0 !important; box-shadow: none !important; }
+            th, td { display: table-cell !important; border: 1px solid #000 !important; padding: 4px !important; }
+            #tabela-corpo td::before { display: none !important; }
+
+            input {
+                background: transparent !important;
+                border: none !important;
+                padding: 2px 4px !important;
+                font-size: 11px !important;
+            }
+            .obs-item input { font-size: 10.5px !important; padding: 1px 2px !important; }
+            input::placeholder { color: transparent !important; }
+            
+            * {
+                -webkit-print-color-adjust: exact !important;
+                print-color-adjust: exact !important;
+            }
         }
     </style>
 </head>
@@ -116,18 +710,23 @@
             <img src="DPA.png" alt="DPA Logo" onerror="this.style.display='none'">
             <h2>Acesso Restrito</h2>
             <div id="login-error" class="error-msg">Usuário ou senha incorretos.</div>
-            <!-- Ao pressionar Enter no teclado, aciona o login -->
             <input type="text" id="user-input" placeholder="Usuário" onkeypress="verificarEnter(event)">
             <input type="password" id="pass-input" placeholder="Senha" onkeypress="verificarEnter(event)">
             <button onclick="validarLogin()">Entrar no Sistema</button>
         </div>
     </div>
 
-    <!-- CONTEÚDO DO SISTEMA (Escondido até validar login) -->
+    <!-- CONTEÚDO DO SISTEMA -->
     <div id="app-content">
         <div class="controls-top">
-            <button class="btn-logout" onclick="sair()">🔒 Sair</button>
-            <button class="btn-print" onclick="window.print()">🖨️ GERAR PDF</button>
+            <div class="brand-pill">
+                <span class="status-dot"></span>
+                <span>Gerador de Orçamentos • DPA</span>
+            </div>
+            <div class="controls-actions">
+                <button class="btn-logout" onclick="sair()">🔒 Sair</button>
+                <button class="btn-print" onclick="window.print()">🖨️ Gerar PDF</button>
+            </div>
         </div>
 
         <div class="page">
@@ -153,41 +752,48 @@
 
             <div class="client-box">
                 <div class="client-row">
-                    <div class="client-field border-right" style="flex: 7;">
-                        CLIENTE: <input type="text" placeholder="NOME DO CLIENTE">
+                    <div class="client-field border-right" style="flex: 6.5;">
+                        <label>CLIENTE:</label>
+                        <input type="text" id="cliente-nome" placeholder="NOME OU RAZÃO SOCIAL">
                     </div>
-                    <div class="client-field" style="flex: 3;">
-                        CNPJ: <input type="text" oninput="mascaraCNPJ(this)" placeholder="00.000.000/0000-00">
+                    <div class="client-field" style="flex: 3.5;">
+                        <label>CPF/CNPJ:</label>
+                        <input type="text" id="cliente-doc" oninput="mascaraDocumento(this)" placeholder="DIGITE PARA BUSCAR">
+                        <span id="status-doc" class="api-status"></span>
                     </div>
                 </div>
                 <div class="client-row">
                     <div class="client-field" style="flex: 1;">
-                        ENDEREÇO: <input type="text" placeholder="ENDEREÇO COMPLETO">
+                        <label>ENDEREÇO:</label>
+                        <input type="text" id="cliente-endereco" placeholder="RUA, NÚMERO, COMPLEMENTO, CIDADE - UF">
                     </div>
                 </div>
                 <div class="client-row">
-                    <div class="client-field border-right" style="flex: 7;">
-                        BAIRRO: <input type="text" placeholder="BAIRRO">
+                    <div class="client-field border-right" style="flex: 6.5;">
+                        <label>BAIRRO:</label>
+                        <input type="text" id="cliente-bairro" placeholder="BAIRRO / SETOR">
                     </div>
-                    <div class="client-field" style="flex: 3;">
-                        CEP: <input type="text" oninput="mascaraCEP(this)" placeholder="00000-000">
+                    <div class="client-field" style="flex: 3.5;">
+                        <label>CEP:</label>
+                        <input type="text" id="cliente-cep" oninput="mascaraCEP(this)" placeholder="00000-000">
+                        <span id="status-cep" class="api-status"></span>
                     </div>
                 </div>
             </div>
 
-            <div>
-                <div class="table-header-black">DESCRIÇÃO</div>
+            <div class="table-section">
+                <div class="table-header-black">DESCRIÇÃO DOS ITENS / SERVIÇOS</div>
                 <div class="table-wrapper">
                     <table>
                         <thead>
                             <tr>
-                                <th style="width: 5%;">QTD</th>
+                                <th style="width: 7%;">QTD</th>
                                 <th style="width: 15%;">CÓDIGO</th>
-                                <th style="width: 35%;">MODELO</th>
-                                <th style="width: 15%;">PREÇO UNIT.</th>
+                                <th style="width: 34%;">MODELO / DESCRIÇÃO</th>
+                                <th style="width: 14%;">PREÇO UNIT.</th>
                                 <th style="width: 15%;">PREÇO TOTAL</th>
                                 <th style="width: 15%;">DISPONIBILIDADE</th>
-                                <th class="col-remove" style="width: 2%; border: none;"></th>
+                                <th class="col-remove" style="width: 34px; border: none; background: transparent;"></th>
                             </tr>
                         </thead>
                         <tbody id="tabela-corpo">
@@ -195,19 +801,19 @@
                         <tfoot>
                             <tr>
                                 <td colspan="3" class="tfoot-obs">
-                                    *OBS.: 5% de desconto em nota de serviço<br>
-                                    *Sem frete
+                                    <div id="lista-observacoes" class="obs-list"></div>
+                                    <button type="button" class="btn-add-obs" onclick="adicionarObservacao('')">+ Adicionar Observação</button>
                                 </td>
                                 <td colspan="1" class="tfoot-label">TOTAL:</td>
                                 <td colspan="2" class="tfoot-value">
                                     <input type="text" id="valor-total-geral" value="R$ 0,00" readonly>
                                 </td>
-                                <td class="col-remove" style="border: none;"></td>
+                                <td class="col-remove" style="border: none; background: transparent;"></td>
                             </tr>
                         </tfoot>
                     </table>
                 </div>
-                <div class="btn-add-row" onclick="adicionarLinha()">+ ADICIONAR ITEM</div>
+                <div class="btn-add-row" onclick="adicionarLinha()">+ ADICIONAR ITEM AO ORÇAMENTO</div>
             </div>
 
         </div>
@@ -217,15 +823,16 @@
         // ==========================================
         // SISTEMA DE LOGIN E SEGURANÇA BÁSICA
         // ==========================================
-        
-        // Verifica ao carregar a página se o usuário já fez login nesta sessão
         window.addEventListener('DOMContentLoaded', () => {
             if (sessionStorage.getItem('dpa_auth_token') === 'true') {
                 liberarAcesso();
             }
+            // Inicia 2 linhas de itens e as observações padrão
+            for (let i = 0; i < 2; i++) adicionarLinha();
+            adicionarObservacao('OBS.: 5% DE DESCONTO EM NOTA DE SERVIÇO');
+            adicionarObservacao('SEM FRETE');
         });
 
-        // Permite logar apertando "Enter" no teclado
         function verificarEnter(event) {
             if (event.key === 'Enter') validarLogin();
         }
@@ -234,7 +841,6 @@
             const user = document.getElementById('user-input').value.toLowerCase().trim();
             const pass = document.getElementById('pass-input').value.toLowerCase().trim();
             
-            // Credenciais ofuscadas em Base64
             if (btoa(user) === 'ZHBh' && btoa(pass) === 'ZHBhMjAyNg==') {
                 sessionStorage.setItem('dpa_auth_token', 'true');
                 liberarAcesso();
@@ -255,26 +861,135 @@
         }
 
         // ==========================================
-        // LÓGICA DO ORÇAMENTO (Formatações e Cálculos)
+        // AUTOPREENCHIMENTO DE CNPJ E CEP (API)
         // ==========================================
+        let ultimoCnpjBuscado = '';
+        let ultimoCepBuscado = '';
 
-        function mascaraCNPJ(input) {
+        function exibirStatus(idElemento, texto, tipo) {
+            const el = document.getElementById(idElemento);
+            if (!texto) {
+                el.style.display = 'none';
+                el.className = 'api-status';
+                return;
+            }
+            el.textContent = texto;
+            el.className = 'api-status ' + tipo;
+            if (tipo === 'ok' || tipo === 'erro') {
+                setTimeout(() => { el.style.display = 'none'; }, 3500);
+            }
+        }
+
+        function mascaraDocumento(input) {
             let v = input.value.replace(/\D/g, "");
             if (v.length > 14) v = v.substring(0, 14);
-            v = v.replace(/^(\d{2})(\d)/, "$1.$2");
-            v = v.replace(/^(\d{2})\.(\d{3})(\d)/, "$1.$2.$3");
-            v = v.replace(/\.(\d{3})(\d)/, ".$1/$2");
-            v = v.replace(/(\d{4})(\d)/, "$1-$2");
+
+            if (v.length <= 11) {
+                // Máscara CPF: 000.000.000-00
+                v = v.replace(/(\d{3})(\d)/, "$1.$2");
+                v = v.replace(/(\d{3})(\d)/, "$1.$2");
+                v = v.replace(/(\d{3})(\d{1,2})$/, "$1-$2");
+            } else {
+                // Máscara CNPJ: 00.000.000/0000-00
+                v = v.replace(/^(\d{2})(\d)/, "$1.$2");
+                v = v.replace(/^(\d{2})\.(\d{3})(\d)/, "$1.$2.$3");
+                v = v.replace(/\.(\d{3})(\d)/, ".$1/$2");
+                v = v.replace(/(\d{4})(\d)/, "$1-$2");
+            }
             input.value = v;
+
+            const numeros = v.replace(/\D/g, "");
+            if (numeros.length === 14 && numeros !== ultimoCnpjBuscado) {
+                ultimoCnpjBuscado = numeros;
+                buscarDadosCNPJ(numeros);
+            }
         }
 
-        function mascaraCEP(input) {
+        async function buscarDadosCNPJ(cnpj) {
+            exibirStatus('status-doc', 'Buscando...', 'loading');
+            try {
+                const resp = await fetch(`https://brasilapi.com.br/api/cnpj/v1/${cnpj}`);
+                if (!resp.ok) throw new Error('Não encontrado');
+                const data = await resp.json();
+
+                document.getElementById('cliente-nome').value = (data.razao_social || data.nome_fantasia || '').toUpperCase();
+                
+                const partesEndereco = [
+                    data.descricao_tipo_de_logradouro ? `${data.descricao_tipo_de_logradouro} ${data.logradouro}` : data.logradouro,
+                    data.numero ? `Nº ${data.numero}` : '',
+                    data.complemento || '',
+                    data.municipio ? `${data.municipio} - ${data.uf}` : ''
+                ].filter(Boolean).join(', ');
+
+                if (partesEndereco) document.getElementById('cliente-endereco').value = partesEndereco.toUpperCase();
+                if (data.bairro) document.getElementById('cliente-bairro').value = data.bairro.toUpperCase();
+                if (data.cep) {
+                    const cepLimpo = String(data.cep).replace(/\D/g, '');
+                    ultimoCepBuscado = cepLimpo;
+                    const inputCep = document.getElementById('cliente-cep');
+                    inputCep.value = cepLimpo;
+                    mascaraCEP(inputCep, false);
+                }
+
+                exibirStatus('status-doc', '✓ Preenchido', 'ok');
+            } catch (err) {
+                exibirStatus('status-doc', 'Não localizado', 'erro');
+            }
+        }
+
+        function mascaraCEP(input, dispararBusca = true) {
             let v = input.value.replace(/\D/g, "");
             if (v.length > 8) v = v.substring(0, 8);
+            const numeros = v;
             v = v.replace(/^(\d{5})(\d)/, "$1-$2");
             input.value = v;
+
+            if (dispararBusca && numeros.length === 8 && numeros !== ultimoCepBuscado) {
+                ultimoCepBuscado = numeros;
+                buscarDadosCEP(numeros);
+            }
         }
 
+        async function buscarDadosCEP(cep) {
+            exibirStatus('status-cep', 'Buscando...', 'loading');
+            try {
+                const resp = await fetch(`https://viacep.com.br/ws/${cep}/json/`);
+                const data = await resp.json();
+                if (data.erro) throw new Error('CEP inválido');
+
+                const endAtual = document.getElementById('cliente-endereco');
+                const ruaCidade = [
+                    data.logradouro || '',
+                    data.localidade ? `${data.localidade} - ${data.uf}` : ''
+                ].filter(Boolean).join(' - ');
+
+                if (ruaCidade) endAtual.value = ruaCidade.toUpperCase();
+                if (data.bairro) document.getElementById('cliente-bairro').value = data.bairro.toUpperCase();
+
+                exibirStatus('status-cep', '✓ CEP OK', 'ok');
+            } catch (e) {
+                exibirStatus('status-cep', 'CEP não achado', 'erro');
+            }
+        }
+
+        // ==========================================
+        // OBSERVAÇÕES DINÂMICAS
+        // ==========================================
+        function adicionarObservacao(textoInicial = '') {
+            const container = document.getElementById('lista-observacoes');
+            const div = document.createElement('div');
+            div.className = 'obs-item';
+            div.innerHTML = `
+                <span class="obs-bullet">*</span>
+                <input type="text" value="${textoInicial}" placeholder="DIGITE A OBSERVAÇÃO...">
+                <button type="button" class="btn-remove-obs" onclick="this.parentElement.remove()" title="Remover observação">×</button>
+            `;
+            container.appendChild(div);
+        }
+
+        // ==========================================
+        // CÁLCULOS E LINHAS DA TABELA
+        // ==========================================
         function formatarMoeda(valor) {
             return valor.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
         }
@@ -317,14 +1032,14 @@
             const tr = document.createElement('tr');
             
             tr.innerHTML = `
-                <td><input type="number" class="qtd input-qtd" value="1" min="1" oninput="calcularTotais()"></td>
-                <td><input type="text"></td>
-                <td><input type="text"></td>
-                <td><input type="text" class="unitario input-money" onblur="formatarInputMoeda(event)"></td>
-                <td><input type="text" class="total-linha input-money" value="R$ 0,00" readonly style="background: transparent;"></td>
-                <td><input type="text"></td>
+                <td data-label="QTD"><input type="number" class="qtd input-qtd" value="1" min="1" oninput="calcularTotais()"></td>
+                <td data-label="CÓDIGO"><input type="text" placeholder="CÓD."></td>
+                <td data-label="MODELO"><input type="text" placeholder="DESCRIÇÃO DO ITEM"></td>
+                <td data-label="PREÇO UNIT."><input type="text" class="unitario input-money" placeholder="R$ 0,00" onblur="formatarInputMoeda(event)"></td>
+                <td data-label="PREÇO TOTAL"><input type="text" class="total-linha input-money" value="R$ 0,00" readonly style="background: transparent;"></td>
+                <td data-label="DISPONIBILIDADE"><input type="text" placeholder="IMEDIATA / PRAZO"></td>
                 <td class="col-remove" style="border: none; background: transparent;">
-                    <button class="btn-remove" onclick="removerLinha(this)" title="Remover item">×</button>
+                    <button type="button" class="btn-remove" onclick="removerLinha(this)" title="Remover item">×</button>
                 </td>
             `;
             tbody.appendChild(tr);
@@ -334,11 +1049,6 @@
             btn.closest('tr').remove();
             calcularTotais();
         }
-
-        // Inicia o sistema com 2 linhas preparadas
-        window.onload = () => {
-            for(let i=0; i<2; i++) adicionarLinha();
-        };
     </script>
 </body>
 </html>
